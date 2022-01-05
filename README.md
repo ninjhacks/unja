@@ -69,8 +69,10 @@ This will display help for the tool.
 text = ( default ) Output urls only.
 
 json = ( -j ) Output url,status,mime,length in json format it's can help you later filtering result based on those variables.
+
 ## Filters
-Filters directly use on providers to get only useful filtered data from provider.
+Filters directly apply on providers to get only useful filtered data from provider.
+
 |      Wayback      |    Commoncrawl    |                      Description                              |
 | :---------------: | :---------------: | :-----------------------------------------------------------: |
 |statuscode:200     |   =status:200     | return only those urls which status code is 200               |
