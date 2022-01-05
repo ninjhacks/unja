@@ -82,7 +82,7 @@ def Otx(domain):
         has_next = True
         while has_next:
             page += 1
-            otxurl = "https://otx.alienvault.com/api/v1/indicators/domain/{}/url_list?limit=500&page={}".format(domain,page)
+            otxurl = "https://otx.alienvault.com/api/v1/indicators/domain/{}/url_list?limit={}&page={}".format(domain,OTXlimit,page)
             rep = req.get(otxurl)
             if rep.status_code == 200:
                 for url in rep.json()["url_list"]:
@@ -164,12 +164,12 @@ parser.add_option( "-p" , "--providers", dest="providers", default="wayback comm
 parser.add_option( "--wbf", dest="wbfilter", default="", help="Set filters on wayback api (Example : statuscode:200 ~mimetype:html ~original:=)")
 parser.add_option( "--ccf", dest="ccfilter", default="", help="Set filters on commoncrawl api (Example : =status:200 ~mime:.*html ~url:.*=)")
 parser.add_option( "--wbl", dest="wbLimit", default=10000, type=int, help="Wayback results per request (default : 10000)")
-parser.add_option( "--otxl", dest="otxLimit", default=10000, type=int, help="Otx results per request (default : 10000)")
+parser.add_option( "--otxl", dest="otxLimit", default=10000, type=int, help="Otx results per request (default : 500, Max : 500)")
 #parser.add_option( "-o", dest="output", help="Output File (optional)")
 parser.add_option( "-r", dest="retry", default=3, type=int, help="Amount of retries for http client	 (default : 3)")
 parser.add_option( "-v", dest="verbose", action='store_true', help="Enable verbose mode to show errors (optional)")
 parser.add_option( "-j", dest="json", action='store_true', help="Enable json mode for detailed output in json format (optional)")
-parser.add_option( "-s", dest="silent", action='store_true', help="Prints only results in the output (optional)")
+parser.add_option( "-s", dest="silent", action='store_true', help="Silent mode don't print header (optional)")
 parser.add_option( "--ucci", dest="ucci", action='store_true', help="Update CommonCrawl Index (optional)")
 parser.add_option( "--vtkey", dest="vtkey", default=False, help="Change VirusTotal Api in config (optional)")
 (options, args) = parser.parse_args()
