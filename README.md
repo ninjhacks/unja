@@ -41,6 +41,15 @@ or, by downloading this repository and running
 ```
 python3 setup.py install
 ```
+
+### Updating Unja
+
+
+You can update `Unja` with pip as following:
+```
+pip3 install unja -U
+```
+
 ## Usage
 
 ```sh
@@ -90,11 +99,11 @@ unja -s -d target.com --sub -p wayback commoncrawl --wbf 'statuscode:200 ~origin
 
 Looking for open redirects
 ```
-unja -s -d target.com --sub -p wayback commoncrawl --wbf '~statuscode:30 ~original:=' --ccf '~status:30 ~url:.*=http' | anew | tee output
+unja -s -d target.com --sub -p wayback commoncrawl --wbf '~statuscode:30 ~original:=http' --ccf '~status:30 ~url:.*=http' | anew | tee output
 ```
 Clean result ( Exclude images,css,javascripts,woff & 404)
 ```
-unja -s -d target.com --sub -p wayback commoncrawl --wbf '!statuscode:404 ~!mimetype:image ~!mimetype:javascript ~!mimetype:css ~!mimetype:woff' --ccf '!~mime:.*image !~mime:.*javascript !~mime:.*css !~mime:.*woff' | anew | tee output
+unja -s -d target.com --sub -p wayback commoncrawl --wbf '!statuscode:404 ~!mimetype:image ~!mimetype:javascript ~!mimetype:css ~!mimetype:woff' --ccf '!=status:404 !~mime:.*image !~mime:.*javascript !~mime:.*css !~mime:.*woff' | anew | tee output
 ```
 
 Let me know if you have any other good oneliner ./
