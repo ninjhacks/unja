@@ -41,9 +41,58 @@ or, by downloading this repository and running
 ```
 python3 setup.py install
 ```
+## Usage
 
-### How to use Unja?
+```sh
+unja -h
+```
 
-A detailed usage guide is available on [Usage](https://github.com/ninjhacks/unja/wiki/Usage) section of the Wiki.
+This will display help for the tool.
 
-Optionally, you can use the `--help` argument to explore Unja on your own.
+|        Flag       |                      Description                      |                     Example                     |
+| :---------------: | :---------------------------------------------------: | :---------------------------------------------: |
+|         -d        |                         doimain                       |              unja -d ninjhacks.com              |
+|       --sub       |                    Include subdomain                  |              unja --sub                         |
+|         -p        |      Providers (wayback commoncrawl otx virustotal)   |              unja -p wayback                    |
+|       --wbf       |            (default : statuscode:200 ~mimetype:html)  |              ninjref --filter statuscode:200    |
+|       --ccf       |            (default : =status:200 ~mime:.*html)       |              ninjref --filter =status:200       |
+|       --wbl       |      Wayback results per request (default : 10000)    |              unja --wbl 1000                    |
+|       --otxl      |         Otx results per request (default : 500)       |              unja --otxl 500                    |
+|         -r        |    Amount of retries for http client (default : 3)    |              nnja -r 3                          |
+|         -v        |           Enable verbose mode to show errors          |              nnja -v                            |
+|         -j        |  Enable json mode for detailed output in json format  |              nnja -j                            |
+|         -s        |          Silent mode don't print header               |              nnja -s                            |
+|       --ucci      |             Update CommonCrawl Index                  |              nnja --ucci                        |
+|       --vtkey     |         Change VirusTotal Api in config               |              nnja --vtkey                       |
+
+## Output Methods
+text = ( default ) Output urls only.
+
+json = ( -j ) Output url,status,mime,length in json format it's can help you later filtering result based on those variables.
+## Filters
+Filters directly use on providers to get only useful filtered data from provider.
+|      Wayback      |    Commoncrawl    |                      Description                              |
+| :---------------: | :---------------: | :-----------------------------------------------------------: |
+|statuscode:200     |   =status:200     | return only those urls which status code is 200               |
+|!statuscode:200    |   !=status:200    | return only non 200 status code                               |
+|mimetype:text/html |  mime:text/html   | return only those url which response type is text/html        |
+|!mimetype:text/html|  !=mime:text/html | return only non text/html response type                       |
+|~mimetype:html     |   ~mime:.*html    | return all those url which have html word in response type    |
+|~original:unja     |   ~url:.*unja     | return all those url which have unja word in url              |
+
+## Oneliners
+Get only urls with parameters & status code 200
+```
+unja -s -d target.com --sub -p wayback commoncrawl --wbf 'statuscode:200 ~original:=' --ccf '=status:200 ~url:.*=' | anew | tee output
+```
+
+Looking for open redirects
+```
+unja -s -d target.com --sub -p wayback commoncrawl --wbf '~statuscode:30 ~original:=' --ccf '~status:30 ~url:.*=http' | anew | tee output
+```
+Clean result ( Exclude images,css,javascripts,woff & 404)
+```
+unja -s -d target.com --sub -p wayback commoncrawl --wbf '!statuscode:404 ~!mimetype:image ~!mimetype:javascript ~!mimetype:css ~!mimetype:woff' --ccf '!~mime:.*image !~mime:.*javascript !~mime:.*css !~mime:.*woff' | anew | tee output
+```
+
+Let me know if you have any other good oneliner ./
