@@ -7,6 +7,7 @@ from threading import Thread
 from optparse import OptionParser
 import json
 import pkg_resources
+import kgsa0day
 
 def wayBack(domain):
     if options.subdomain == True:
