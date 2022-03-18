@@ -63,16 +63,16 @@ This will display help for the tool.
 |         -d        |                         doimain                       |              unja -d ninjhacks.com              |
 |       --sub       |                    Include subdomain                  |              unja --sub                         |
 |         -p        |      Providers (wayback commoncrawl otx virustotal)   |              unja -p wayback                    |
-|       --wbf       |            (default : statuscode:200 ~mimetype:html)  |              ninjref --filter statuscode:200    |
-|       --ccf       |            (default : =status:200 ~mime:.*html)       |              ninjref --filter =status:200       |
+|       --wbf       |            (default : statuscode:200 ~mimetype:html)  |              unja --wbf statuscode:200          |
+|       --ccf       |            (default : =status:200 ~mime:.*html)       |              unja --ccf =status:200             |
 |       --wbl       |      Wayback results per request (default : 10000)    |              unja --wbl 1000                    |
 |       --otxl      |         Otx results per request (default : 500)       |              unja --otxl 500                    |
-|         -r        |    Amount of retries for http client (default : 3)    |              nnja -r 3                          |
-|         -v        |           Enable verbose mode to show errors          |              nnja -v                            |
-|         -j        |  Enable json mode for detailed output in json format  |              nnja -j                            |
-|         -s        |          Silent mode don't print header               |              nnja -s                            |
-|       --ucci      |             Update CommonCrawl Index                  |              nnja --ucci                        |
-|       --vtkey     |         Change VirusTotal Api in config               |              nnja --vtkey                       |
+|         -r        |    Amount of retries for http client (default : 3)    |              unja -r 3                          |
+|         -v        |           Enable verbose mode to show errors          |              unja -v                            |
+|         -j        |  Enable json mode for detailed output in json format  |              unja -j                            |
+|         -s        |          Silent mode don't print header               |              unja -s                            |
+|       --ucci      |             Update CommonCrawl Index                  |              unja --ucci                        |
+|       --vtkey     |         Change VirusTotal Api in config               |              unja --vtkey                       |
 
 ## Output Methods
 text = ( default ) Output urls only.

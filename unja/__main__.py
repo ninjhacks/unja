@@ -40,11 +40,12 @@ def wayBack(domain):
                 if rep.status_code == 200:
                     data = rep.text.splitlines()
                     if data != []:
-                        if data[-2] == "":
-                            resumeKey = data[-1]
-                            print(resumeKey)
-                            for url in data[1:-2]:
-                                print(url)
+                        if len(data) > 3:
+                            if  data[-2] == "":
+                                resumeKey = data[-1]
+                                print(resumeKey)
+                                for url in data[1:-2]:
+                                    print(url)
                         else:
                             rKey = False
                             for url in data[1:]:
