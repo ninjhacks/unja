@@ -40,15 +40,13 @@ def wayBack(domain):
                 if rep.status_code == 200:
                     data = rep.text.splitlines()
                     if data != []:
-                        if len(data) > 3:
-                            if  data[-2] == "":
-                                resumeKey = data[-1]
-                                print(resumeKey)
-                                for url in data[1:-2]:
-                                    print(url)
+                        if len(data) > 1 and data[-2] == "":
+                            resumeKey = data[-1]
+                            for url in data[1:-2]:
+                                print(url)
                         else:
                             rKey = False
-                            for url in data[1:]:
+                            for url in data:
                                 print(url)
                     else:
                         rKey = False
@@ -139,6 +137,7 @@ def worker(domain):
     if cCrawl:
         Thread(target=commonCrawl, args=(domain,)).start()
     if wBack:
+        #wayBack(domain)
         Thread(target=wayBack, args=(domain,)).start()
     if otx:
         Thread(target=Otx, args=(domain,)).start()
@@ -161,7 +160,7 @@ Version : %s
 parser = OptionParser(usage="%prog: [options]")
 parser.add_option( "-d", dest="domain", help="domain (Example : example.com)")
 parser.add_option( "--sub", dest="subdomain", action='store_true', help="Subdomain (optional)")
-parser.add_option( "-p" , "--providers", dest="providers", default="wayback commoncrawl otx virustotal", help="Select Providers (default : wayback commoncrawl otx virustotal)")
+parser.add_option( "-p" , "--providers", dest="providers", default="wayback,commoncrawl,otx,virustotal", help="Select Providers (default : wayback,commoncrawl,otx,virustotal)")
 parser.add_option( "--wbf", dest="wbfilter", default="", help="Set filters on wayback api (Example : statuscode:200 ~mimetype:html ~original:=)")
 parser.add_option( "--ccf", dest="ccfilter", default="", help="Set filters on commoncrawl api (Example : =status:200 ~mime:.*html ~url:.*=)")
 parser.add_option( "--wbl", dest="wbLimit", default=10000, type=int, help="Wayback results per request (default : 10000)")
@@ -220,7 +219,7 @@ cCrawl = wBack = otx = vtotal = False
 WBlimit = options.wbLimit 
 OTXlimit = options.otxLimit
 
-for provider in options.providers.split():
+for provider in options.providers.split(','):
     if provider == "commoncrawl":
         ccIndex = configData["CommonCrawlIndex"]
         if ccIndex != "":
@@ -240,7 +239,9 @@ for provider in options.providers.split():
             vTotalAPI = configData["VirusTotalApi"]
             vtotal = True
         else:
-            print("Warning | VirusTotal | VirusTotal api not found")
+            if not options.silent:
+                print("Warning | VirusTotal | VirusTotal api not found | Use --vtkey")
+                exit()
 
 def main():
     if cCrawl | wBack | otx | vtotal:

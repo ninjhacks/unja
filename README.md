@@ -62,7 +62,7 @@ This will display help for the tool.
 | :---------------: | :---------------------------------------------------: | :---------------------------------------------: |
 |         -d        |                         doimain                       |              unja -d ninjhacks.com              |
 |       --sub       |                    Include subdomain                  |              unja --sub                         |
-|         -p        |      Providers (wayback commoncrawl otx virustotal)   |              unja -p wayback                    |
+|         -p        |      Providers (wayback,commoncrawl,otx,virustotal)   |              unja -p wayback                    |
 |       --wbf       |            (default : statuscode:200 ~mimetype:html)  |              unja --wbf statuscode:200          |
 |       --ccf       |            (default : =status:200 ~mime:.*html)       |              unja --ccf =status:200             |
 |       --wbl       |      Wayback results per request (default : 10000)    |              unja --wbl 1000                    |
@@ -94,16 +94,16 @@ Filters directly apply on providers to get only useful filtered data from provid
 ## Oneliners
 Get only urls with parameters & status code 200
 ```
-unja -s -d target.com --sub -p wayback commoncrawl --wbf 'statuscode:200 ~original:=' --ccf '=status:200 ~url:.*=' | anew | tee output
+unja -s -d target.com --sub -p wayback,commoncrawl --wbf 'statuscode:200 ~original:=' --ccf '=status:200 ~url:.*=' | anew | tee output
 ```
 
 Looking for open redirects
 ```
-unja -s -d target.com --sub -p wayback commoncrawl --wbf '~statuscode:30 ~original:=http' --ccf '~status:30 ~url:.*=http' | anew | tee output
+unja -s -d target.com --sub -p wayback,commoncrawl --wbf '~statuscode:30 ~original:=http' --ccf '~status:30 ~url:.*=http' | anew | tee output
 ```
 Clean result ( Exclude images,css,javascripts,woff & 404)
 ```
-unja -s -d target.com --sub -p wayback commoncrawl --wbf '!statuscode:404 ~!mimetype:image ~!mimetype:javascript ~!mimetype:css ~!mimetype:woff' --ccf '!=status:404 !~mime:.*image !~mime:.*javascript !~mime:.*css !~mime:.*woff' | anew | tee output
+unja -s -d target.com --sub -p wayback,commoncrawl --wbf '!statuscode:404 ~!mimetype:image ~!mimetype:javascript ~!mimetype:css ~!mimetype:woff' --ccf '!=status:404 !~mime:.*image !~mime:.*javascript !~mime:.*css !~mime:.*woff' | anew | tee output
 ```
 
 Let me know if you have any other good oneliner ./
