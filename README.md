@@ -19,11 +19,11 @@
 
 ### What's Unja?
 
-Unja is a fast & light tool for fetching known URLs from Wayback Machine, Common Crawl, Virus Total & AlienVault's Otx it uses a separate thread for each provider to optimize its speed and use Wayback resumption key to divide scan into multiple parts to handle a large scan & it uses direct filters on API to get only filtered data from API to do less work on your system.
+Unja is a fast & light tool for fetching known URLs from Wayback Machine, Common Crawl, Virus Total, UrlScan.io & AlienVault's Otx it uses a separate thread for each provider to optimize its speed and use Wayback resumption key to divide scan into multiple parts to handle a large scan & it uses direct filters on API to get only filtered data from API to do less work on your system.
 
 ### Why Unja?
 
-- Supports `Wayback/Common-Crawl/Virus-Total/Otx`
+- Supports `Wayback/Common-Crawl/Virus-Total/Otx/UrlScan.io`
 - Automatically handles rate limits and timeouts
 - Export results: text or detailed output with status,mime,length in JSON
 - MultiThreading: separate thread for each provider to fetch data simultaneously
@@ -61,10 +61,11 @@ This will display help for the tool.
 |        Flag       |                      Description                      |                     Example                     |
 | :---------------: | :---------------------------------------------------: | :---------------------------------------------: |
 |         -d        |                         doimain                       |              unja -d ninjhacks.com              |
+|         -f        |        List of domains file seprated by new line      |              unja -f domains.txt                |
 |       --sub       |                    Include subdomain                  |              unja --sub                         |
-|         -p        |      Providers (wayback,commoncrawl,otx,virustotal)   |              unja -p wayback                    |
-|       --wbf       |            (default : statuscode:200 ~mimetype:html)  |              unja --wbf statuscode:200          |
-|       --ccf       |            (default : =status:200 ~mime:.*html)       |              unja --ccf =status:200             |
+|         -p        | Providers (wayback,commoncrawl,otx,virustotal,urlscan)|              unja -p wayback                    |
+|       --wbf       |          (default : statuscode:200 ~mimetype:html)    |              unja --wbf statuscode:200          |
+|       --ccf       |          (default : =status:200 ~mime:.*html)         |              unja --ccf =status:200             |
 |       --wbl       |      Wayback results per request (default : 10000)    |              unja --wbl 1000                    |
 |       --otxl      |         Otx results per request (default : 500)       |              unja --otxl 500                    |
 |         -r        |    Amount of retries for http client (default : 3)    |              unja -r 3                          |
@@ -73,6 +74,7 @@ This will display help for the tool.
 |         -s        |          Silent mode don't print header               |              unja -s                            |
 |       --ucci      |             Update CommonCrawl Index                  |              unja --ucci                        |
 |       --vtkey     |         Change VirusTotal Api in config               |              unja --vtkey                       |
+|       --uskey     |         Change UrlScan Api in config                  |              unja --uskey                       |
 
 ## Output Methods
 text = ( default ) Output urls only.

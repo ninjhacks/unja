@@ -3,3 +3,4 @@ build
 dist
 extra
 unja.egg-info
+unja/__init__.pyc

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -103,7 +102,7 @@ def Otx(domain):
 
 def vTotal(domain):
     try:
-        vturl = "https://www.virustotal.com/vtapi/v2/domain/report?apikey={}&domain={}".format(vTotalAPI, domain)
+        vturl = "https://www.virustotal.com/vtapi/v2/domain/report?apikey={}&domain={}".format(vTotalAPIKEY, domain)
         rep = requests.get(vturl)
         if rep.status_code == 200:
             if "detected_urls" in rep.json():
@@ -122,6 +121,32 @@ def vTotal(domain):
         if options.verbose:
             print("Error | VirusTotal | "+str(err))
 
+def urlScan(domain):
+    try:
+        hasMore = False
+        noMore = True
+        searchAfter = ''
+        if uScanAPIKEY != '':
+            header = {'API-Key':uScanAPIKEY}
+        else:
+            header = {}
+        while noMore:
+            if hasMore:
+                usurl = "https://urlscan.io/api/v1/search/?q=domain:{}&size=100&search_after={}".format(domain, ','.join(map(str,searchAfter)))
+            else:
+                usurl = "https://urlscan.io/api/v1/search/?q=domain:{}&size=100".format(domain)
+            rep = requests.get(usurl,headers=header)
+            if rep.status_code == 200:
+                repj = rep.json()
+                hasMore = noMore = repj['has_more']
+                for result in repj['results']:
+                    if result['page']['apexDomain'] == domain:
+                        print(result['page']['url'])
+                    searchAfter = result['sort']
+    except requests.RequestException as err:
+        if options.verbose:
+            print("Error | UrlScan | "+str(err))
+
 def cCrawlIndex():
     #client = "commonCrawl Index"
     try:
@@ -137,12 +162,13 @@ def worker(domain):
     if cCrawl:
         Thread(target=commonCrawl, args=(domain,)).start()
     if wBack:
-        #wayBack(domain)
         Thread(target=wayBack, args=(domain,)).start()
     if otx:
         Thread(target=Otx, args=(domain,)).start()
     if vtotal:
         Thread(target=vTotal, args=(domain,)).start()
+    if uscan:
+        Thread(target=urlScan, args=(domain,)).start()
 
 def header():
     print('''\033[01;32m
@@ -153,14 +179,15 @@ _  / / /__   |/ /___ _  /__  /| |
 \____/  /_/ |_/  \____/  /_/  |_|
                                                                                    
 Author: sheryar (ninjhacks)
-Version : %s
+Version : %s HBD🥳🤩🎂🎉syedalizain033
 
 \033[01;37m''' % (__import__('unja').__version__))
 
 parser = OptionParser(usage="%prog: [options]")
 parser.add_option( "-d", dest="domain", help="domain (Example : example.com)")
+parser.add_option( "-f", dest="file", help="domain list file (Example : example.com.txt)")
 parser.add_option( "--sub", dest="subdomain", action='store_true', help="Subdomain (optional)")
-parser.add_option( "-p" , "--providers", dest="providers", default="wayback,commoncrawl,otx,virustotal", help="Select Providers (default : wayback,commoncrawl,otx,virustotal)")
+parser.add_option( "-p" , "--providers", dest="providers", default="wayback,commoncrawl,otx,virustotal,urlscan", help="Select Providers (default : wayback,commoncrawl,otx,virustotal,urlscan)")
 parser.add_option( "--wbf", dest="wbfilter", default="", help="Set filters on wayback api (Example : statuscode:200 ~mimetype:html ~original:=)")
 parser.add_option( "--ccf", dest="ccfilter", default="", help="Set filters on commoncrawl api (Example : =status:200 ~mime:.*html ~url:.*=)")
 parser.add_option( "--wbl", dest="wbLimit", default=10000, type=int, help="Wayback results per request (default : 10000)")
@@ -171,7 +198,8 @@ parser.add_option( "-v", dest="verbose", action='store_true', help="Enable verbo
 parser.add_option( "-j", dest="json", action='store_true', help="Enable json mode for detailed output in json format (optional)")
 parser.add_option( "-s", dest="silent", action='store_true', help="Silent mode don't print header (optional)")
 parser.add_option( "--ucci", dest="ucci", action='store_true', help="Update CommonCrawl Index (optional)")
-parser.add_option( "--vtkey", dest="vtkey", default=False, help="Change VirusTotal Api in config (optional)")
+parser.add_option( "--vtkey", dest="vtkey", default=False, help="Change VirusTotal ApiKey in config (optional)")
+parser.add_option( "--uskey", dest="uskey", default=False, help="Change UrlScan ApiKey in config (optional)")
 (options, args) = parser.parse_args()
 
 if not options.silent:
@@ -199,7 +227,7 @@ if options.ucci:
     newccIndex = cCrawlIndex()
     if newccIndex != False:
         configFile = open(configPath, "w")
-        ccIndex = configData["CommonCrawlIndex"] = newccIndex
+        configData["CommonCrawlIndex"] = newccIndex
         json.dump(configData, configFile)
         configFile.close()
     else:
@@ -207,11 +235,25 @@ if options.ucci:
 
 if options.vtkey:
     configFile = open(configPath, "w")
-    ccIndex = configData["VirusTotalApi"] = options.vtkey
+    configData["VirusTotalApiKey"] = options.vtkey
     json.dump(configData, configFile)
     configFile.close()
 
-if not options.domain:
+if options.uskey:
+    configFile = open(configPath, "w")
+    configData["UrlScanApiKey"] = options.uskey
+    json.dump(configData, configFile)
+    configFile.close()
+
+if not options.domain and not options.file:
+    exit()
+
+if options.file:
+    dfile = open(options.file, 'r')
+    domainList = dfile.read().splitlines()
+elif options.domain:
+    domainList = [options.domain]
+else:
     exit()
 
 wbFilters = ccFilters = ""
@@ -235,17 +277,21 @@ for provider in options.providers.split(','):
     elif provider == "otx":
         otx = True
     elif provider == "virustotal":
-        if configData["VirusTotalApi"] != "":
-            vTotalAPI = configData["VirusTotalApi"]
+        vTotalAPIKEY = configData["VirusTotalApiKey"]
+        if vTotalAPIKEY != "":
             vtotal = True
         else:
             if not options.silent:
                 print("Warning | VirusTotal | VirusTotal api not found | Use --vtkey")
                 exit()
+    elif provider == "urlscan":
+        uScanAPIKEY = configData["UrlScanApiKey"]
+        uscan = True
 
 def main():
-    if cCrawl | wBack | otx | vtotal:
-        worker(options.domain)
+    if cCrawl | wBack | otx | vtotal | uscan:
+        for domain in domainList:
+            worker(domain)
 
 if __name__ == "__main__":
     main()

@@ -39,5 +39,5 @@ setup(
             'unja = unja.__main__:main'
         ]
     },
-    keywords=['unja', 'bug bounty', 'wayback', 'pentesting', 'recon'],
+    keywords=['unja', 'bug bounty', 'wayback', 'common crawl', 'virus total', 'urlscan', 'pentesting', 'recon'],
 )
