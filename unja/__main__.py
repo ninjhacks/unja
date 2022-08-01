@@ -179,7 +179,7 @@ _  / / /__   |/ /___ _  /__  /| |
 \____/  /_/ |_/  \____/  /_/  |_|
                                                                                    
 Author: sheryar (ninjhacks)
-Version : %s HBD🥳🤩🎂🎉syedalizain033
+Version : %s
 
 \033[01;37m''' % (__import__('unja').__version__))
 
@@ -257,7 +257,7 @@ else:
     exit()
 
 wbFilters = ccFilters = ""
-cCrawl = wBack = otx = vtotal = False
+cCrawl = wBack = otx = vtotal = uscan = False
 WBlimit = options.wbLimit 
 OTXlimit = options.otxLimit
 
